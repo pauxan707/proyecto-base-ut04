@@ -11,8 +11,13 @@ import ucu.edu.aed.tda.grafo.model.edge.DirectedEdge;
 import ucu.edu.aed.tda.grafo.model.edge.Edge;
 
 public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
-    public final Set<V> vertices = new HashSet<>();
-    public final Set<Edge<V, D>> aristas = new HashSet<>();
+    public final Set<V> vertices;
+    public final Set<Edge<V, D>> aristas;
+
+    public DirectedGraph() {
+        vertices = new HashSet<>();
+        aristas = new HashSet<>();
+    }
     /**
      * Agrega un vértice, y retorna true si efectivamente lo agrega
      */
@@ -29,16 +34,18 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
 
 
     public V buscarVertice(Comparable<V> criterio){
-        return vertices.stream().filter(v -> criterio.compareTo(v) == 0).findFirst().orElse(null);
+        for (V v : vertices) {
+            if (criterio.compareTo(v) == 0) {
+                return v;
+            }
+        }
+        return null;
     }
 
     /**
      * Agrega una arista al grafo, indicando con un booleano si la agregó
      */
     public boolean agregarArista(V source, V target, D dato){
-        if (!vertices.contains(source) || !vertices.contains(target)) {
-            return false;
-        }
         return aristas.add(new DirectedEdge<>(source, target, dato));
     }
 
@@ -57,7 +64,7 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
      */
     @Override
     public Set<V> vertices(){
-        return Collections.unmodifiableSet(vertices);
+        return Set.copyOf(vertices);
     }
 
     /**
@@ -65,7 +72,7 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
      */
     @Override
     public Set<Edge<V, D>> aristas(){
-        return Collections.unmodifiableSet(aristas);
+        return Set.copyOf(aristas);
     }
 
     /**
