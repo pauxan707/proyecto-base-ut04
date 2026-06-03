@@ -83,13 +83,17 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
      * ejecuta Floyd sobre el grafo pasado, sabiendo que el grafo es weighted
      */
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo){}
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo){
+        return null;
+    }
 
     /**
      * ejecuta Warshall sobre el grafo pasado, sabiendo que el grafo es weighted
      */
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo){}
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo){
+        return null;
+    }
  
     /**
      * Calcula el centro del grafo, el vertice con menor excentricidad
