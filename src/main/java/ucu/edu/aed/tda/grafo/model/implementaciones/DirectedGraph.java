@@ -1,6 +1,5 @@
 package ucu.edu.aed.tda.grafo.model.implementaciones;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -10,154 +9,181 @@ import ucu.edu.aed.tda.grafo.IDirectedIGraph;
 import ucu.edu.aed.tda.grafo.model.edge.DirectedEdge;
 import ucu.edu.aed.tda.grafo.model.edge.Edge;
 
-public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
-    public final Set<V> vertices;
-    public final Set<Edge<V, D>> aristas;
+public class DirectedGraph<V, D> extends TGraph<V, D> implements IDirectedIGraph<V, D> {
 
-    public DirectedGraph() {
-        vertices = new HashSet<>();
-        aristas = new HashSet<>();
-    }
-    /**
-     * Agrega un vértice, y retorna true si efectivamente lo agrega
-     */
-    public boolean agregarVertice(V vertex){
-        return vertices.add(vertex);
-    }
+    @Override
+    public boolean agregarArista(V source, V target, D dato) {
 
-    /**
-     * Operación "Bulk",  agrega muchos vértices en la misma llamada
-     */
-    default void agregarVertices(Collection<V> vertices) {
-        vertices.forEach(this::agregarVertice);
+        if (!adyacencias.containsKey(source) || !adyacencias.containsKey(target)) {
+            return false;
+        }
+
+        if (existeArista(construirComparable(source), construirComparable(target))) {
+            return false;
+        }
+
+        DirectedEdge<V, D> nuevaArista = new DirectedEdge<V,D>(source, target, dato);
+        adyacencias.get(source).add(nuevaArista);
+
+        return true;
     }
 
+    @Override
+    public boolean eliminarArista(Comparable<V> source, Comparable<V> target) {
 
-    public V buscarVertice(Comparable<V> criterio){
-        for (V v : vertices) {
-            if (criterio.compareTo(v) == 0) {
-                return v;
+        V src = buscarVertice(source);
+        V trgt = buscarVertice(target);
+
+        if (src == null || trgt == null) {
+            return false;
+        }
+
+        Edge<V, D> arista = obtenerArista(source, target);
+
+        if (arista == null) {
+            return false;
+        }
+
+        adyacencias.get(src).remove(arista);
+        return true;
+    }
+
+    @Override
+    public Set<Edge<V, D>> aristas() {
+
+        Set<Edge<V, D>> setAristas = new HashSet<>();
+
+        for (List<Edge<V,D>> aristas : adyacencias.values()) {
+            setAristas.addAll(aristas);
+        }
+
+        return Collections.unmodifiableSet(setAristas);
+    }
+
+    @Override
+    public Edge<V, D> obtenerArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria) {
+
+        V src = buscarVertice(sourceCriteria);
+        V trgt = buscarVertice(targetCriteria);
+
+        if (src == null || trgt == null) {
+            return null;
+        }
+
+        for  (Edge<V, D> arista : adyacencias.get(src)) {
+
+            if (targetCriteria.compareTo(arista.target()) == 0) {
+                return arista;
             }
         }
+
         return null;
     }
 
-    /**
-     * Agrega una arista al grafo, indicando con un booleano si la agregó
-     */
-    public boolean agregarArista(V source, V target, D dato){
-        return aristas.add(new DirectedEdge<>(source, target, dato));
-    }
-
-    /**
-     * Elimina una arista del grafo
-     */
-    boolean eliminarArista(Comparable<V> source, Comparable<V> target);
-
-    /**
-     * remueve un vértice del grafo, retorna true si el vértice fue efectivamente removido
-     */
-    boolean removerVertice(Comparable<V> criteria);
-
-    /**
-     * Conjunto de vértices (preferible devolver vista inmodificable).
-     */
     @Override
-    public Set<V> vertices(){
-        return Set.copyOf(vertices);
+    public Set<V> successors(Comparable<V> criteria) {
+
+        V vertice = buscarVertice(criteria);
+
+        Set<V> sucesores = new HashSet<>();
+
+        if (vertice != null){
+            for (Edge<V, D> arista : adyacencias.get(vertice)) {
+
+                sucesores.add(arista.target());
+            }
+        }
+
+        return sucesores;
     }
 
-    /**
-     * Conjunto de aristas (preferible vista inmodificable).
-     */
     @Override
-    public Set<Edge<V, D>> aristas(){
-        return Set.copyOf(aristas);
+    public Set<V> predecessors(Comparable<V> criteria) {
+
+        V vertice = buscarVertice(criteria);
+
+        Set<V> predecesores = new HashSet<>();
+
+        if (vertice != null) {
+            for (V v : adyacencias.keySet()) { 
+
+                if (obtenerArista(construirComparable(v), criteria) != null){ 
+                    predecesores.add(v);
+                }
+
+            }
+        }
+
+        return predecesores;
     }
 
-    /**
-     * ¿Existe el vértice v?
-     */
-    default boolean existeVertice(Comparable<V> criterio) {
-        return vertices().stream().anyMatch(x -> criterio.compareTo(x) == 0);
+    @Override
+    public boolean esConexo() {
+
+        if (adyacencias.isEmpty()) {
+            return true;
+        }
+
+        for (V vertice : adyacencias.keySet()) {
+
+            Set<V> visitados = new HashSet<>();
+
+            dfs(vertice, visitados);
+            if (visitados.size() != adyacencias.size()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
-    /**
-     * ¿Existe la arista (u -> v) en un grafo dirigido o (u,v) en uno no dirigido?
-     */
-    boolean existeArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria);
+    private void dfs(V vertice, Set<V> visitados) {
 
-    /**
-     * Retorna una arista que tiene un origen y destino source y target respectivamente
-     */
-    Edge<V, D> obtenerArista(Comparable<V> sourceCriteria, Comparable<V> targetCriteria);
+        visitados.add(vertice);
 
-    default Edge<V, D> obtenerArista(V sourceCriteria, V targetCriteria) {
-        return obtenerArista(construirComparable(sourceCriteria), construirComparable(targetCriteria));
+        for (Edge<V, D> arista : adyacencias.get(vertice)) {
+            if (!visitados.contains(arista.target())) {
+                dfs(arista.target(), visitados);
+            }
+        } 
     }
 
-    /**
-     * Retorna todas las aristas que el vertex tiene como adyacentes.
-     * En caso de que sea un grafo no dirigido, el método "source()"
-     * referencia al vértice "verticeCriteria"
-     */
-    List<Edge<V, D>> adyacencias(Comparable<V> verticeCriteria);
+    @Override
+    public boolean tieneCiclos() {
+        
+        Set<V> visitados = new HashSet<>();
+        Set<V> enProceso = new HashSet<>();
 
-    /**
-     * Retorna la cantidad de vértices
-     */
-    default int cantidadDeVertices() {
-        return vertices().size();
+        for (V vertice : adyacencias.keySet()) {
+            if (!visitados.contains(vertice)) {
+                if (dfsCiclo(vertice, visitados, enProceso)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
-    /**
-     * Retorna la cantidad de artists
-     */
-    default int cantidadDeAristas() {
-        return aristas().size();
-    }
+    private boolean dfsCiclo(V vertice, Set<V> visitados, Set<V> enProceso) {
 
-    /**
-     * Retorna true si el grafo es conexo
-     */
-    boolean esConexo();
+        enProceso.add(vertice);
 
-    /**
-     * vacía el grafo
-     */
-    public void vaciar(){
-        vertices.clear();
-        aristas.clear();
-    }
+        for (Edge<V, D> arista: adyacencias.get(vertice)) {
 
-    /**
-     * retorna true si el grafo tiene ciclos
-     */
-    boolean tieneCiclos();
+            if (enProceso.contains(arista.target())) {
+                return true;
+            }
+            
+            if (!visitados.contains(arista.target())) {
+                if (dfsCiclo(arista.target(), visitados, enProceso)) {
+                    return true;
+                }
+            }
+        }
 
-/** método utilitario para construir un comparable de un vértice cualquier utilizando equals */
-    default Comparable<V> construirComparable(V vertice) {
-        return x -> x.equals(vertice) ? 0 : 1;
-    }
-
-    Set<V> successors(Comparable<V> criteria);
-
-    /**
-     * Predecesores (vecinos con aristas entrantes) de v.
-     */
-    Set<V> predecessors(Comparable<V> criteria);
-
-    /**
-     * Calcula la cantidad de vértices que salen de "v"
-     */
-    default int gradoDeSalida(Comparable<V> criteria) {
-        return successors(criteria).size();
-    }
-
-    /**
-     * Calcula la cantidad de vertices que "apuntan" a v
-     */
-    default int gradoDeEntrada(Comparable<V> criteria) {
-        return predecessors(criteria).size();
+        visitados.add(vertice);
+        enProceso.remove(vertice);
+        return false;
     }
 }
