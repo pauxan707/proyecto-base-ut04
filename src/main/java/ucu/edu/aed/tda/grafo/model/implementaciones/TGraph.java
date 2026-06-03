@@ -18,6 +18,7 @@ public abstract class TGraph<V, D> implements IGraph<V, D>{
         this.adyacencias = new HashMap<>();
     }
 
+    
     @Override
     public boolean agregarVertice(V vertex) {
         if (vertex == null || adyacencias.containsKey(vertex)) {
