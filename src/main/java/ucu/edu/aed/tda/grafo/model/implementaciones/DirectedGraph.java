@@ -31,14 +31,6 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
         return true;
     }
 
-    /**
-     * Operación "Bulk",  agrega muchos vértices en la misma llamada
-     */
-    default void agregarVertices(Collection<V> vertices) {
-
-    }
-
-
     @Override
     public V buscarVertice(Comparable<V> criterio) {
         for (V vertice : adyacencias.keySet()) {
@@ -97,7 +89,16 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
      */
     @Override
     public boolean removerVertice(Comparable<V> criteria) {
+        V vertice = buscarVertice(criteria);
 
+        if (vertice == null) {
+            return false;
+        }
+        for (V v : adyacencias.keySet()) {
+            adyacencias.get(v).removeIf(arista -> arista.target().equals(vertice));
+        }
+        adyacencias.remove(vertice);
+        return true;
     }
 
     
@@ -124,12 +125,6 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
         return Collections.unmodifiableSet(setAristas);
     }
 
-     /**
-     * ¿Existe el vértice v?
-     */
-    default boolean existeVertice(Comparable<V> criterio) {
-
-    }
 
     /**
      * ¿Existe la arista (u -> v) en un grafo dirigido o (u,v) en uno no dirigido?
@@ -176,11 +171,6 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
         return null;
     }
 
-    default Edge<V, D> obtenerArista(V sourceCriteria, V targetCriteria) {
-        return obtenerArista(construirComparable(sourceCriteria), construirComparable(targetCriteria));
-    }
-
-
 /**
      * Retorna todas las aristas que el vertex tiene como adyacentes.
      * En caso de que sea un grafo no dirigido, el método "source()"
@@ -188,22 +178,13 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
      */
     @Override
     public List<Edge<V, D>> adyacencias(Comparable<V> verticeCriteria) {
+        V vertice = buscarVertice(verticeCriteria);
+        if (vertice == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(adyacencias.get(vertice));
     }
 
-    /**
-     * Retorna la cantidad de vértices
-     */
-    default int cantidadDeVertices() {
-        return vertices().size();
-    }
-
-    /**
-     * Retorna la cantidad de artists
-     */
-    default int cantidadDeAristas() {
-        return aristas().size();
-    }
-     
     /**
      * Retorna true si el grafo es conexo
      */
@@ -243,7 +224,7 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
      */
     @Override
     public void vaciar() {
-        
+        adyacencias.clear();
     }
 
     /**
@@ -288,11 +269,6 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
         return false;
     }
 
-     /** método utilitario para construir un comparable de un vértice cualquier utilizando equals */
-    default Comparable<V> construirComparable(V vertice) {
-        return x -> x.equals(vertice) ? 0 : 1;
-    }
-
     /**
      * Sucesores (vecinos alcanzables por aristas salientes) de v.
      */
@@ -331,19 +307,4 @@ public class DirectedGraph<V, D> implements IDirectedIGraph<V, D> {
         }
         return predecesores;
     }
-
-    /**
-     * Calcula la cantidad de vértices que salen de "v"
-     */
-    default int gradoDeSalida(Comparable<V> criteria) {
-        return successors(criteria).size();
-    }
-
-    /**
-     * Calcula la cantidad de vertices que "apuntan" a v
-     */
-    default int gradoDeEntrada(Comparable<V> criteria) {
-        return predecessors(criteria).size();
-    }
-
 }
