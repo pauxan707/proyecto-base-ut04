@@ -15,5 +15,5 @@ public interface IDijkstraResult<V> {
     /**
      * Retorna el camino para ir a "otherVertex"
      */
-    List<V> getPath(V otherVertex);
+    List<V> getPath(V otherVertex); //se me hace raro que devuelva List<V> habiendo una clase Path? igual, no lo toco porque es del proyecto base.
 }

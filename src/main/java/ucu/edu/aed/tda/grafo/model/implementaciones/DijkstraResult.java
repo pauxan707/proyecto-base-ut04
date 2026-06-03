@@ -11,7 +11,7 @@ public class DijkstraResult<V> implements IDijkstraResult<V>{
     private Map<V, Double> distancia;
     private Map<V, List<V>> caminos;
     
-    public DijkstraResult(V source, Map<V, Double> distancia, Map<V, List<V>>  caminos, V origen) {
+    public DijkstraResult(V source, Map<V, Double> distancia, Map<V, List<V>>  caminos) {
         this.source = source;
         this.distancia = distancia;
         this.caminos =  caminos; 

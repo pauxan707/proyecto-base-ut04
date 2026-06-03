@@ -1,5 +1,6 @@
 package ucu.edu.aed.tda.grafo.model.implementaciones;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,12 +21,58 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
      * ejecuta el algoritmos Dijkstra sobre el grafo pasado y utilizando source como vértice de origen
      */
     @Override
-    public <V, D extends WeightedEdge> IDijkstraResult<V> dijkstra(Comparable<V> source, IDirectedIGraph<V, D> grafo){
+    public <V, D extends WeightedEdge> IDijkstraResult<V> dijkstra(Comparable<V> source, IDirectedIGraph<V, D> grafo) {
         Map<V, Double> distancia = new HashMap<>();
         Map<V, List<V>> caminos = new HashMap<>();
         Set<V> visitados = new HashSet<>();
 
         V sourceVertex = grafo.buscarVertice(source);
+
+        //inicializamos distancias en "infinito" (MAX_VALUE)
+        for (V v : grafo.vertices()) {
+            distancia.put(v, Double.MAX_VALUE);
+            caminos.put(v, new ArrayList<>());
+        }
+
+        //origen distancia 0
+        distancia.put(sourceVertex, 0.0);
+        caminos.get(sourceVertex).add(sourceVertex);
+
+        //while hayan vertices sin visitar
+        while (visitados.size() < grafo.cantidadDeVertices()) {
+
+            //se busca el vertice sin visitar a menor distancia
+            V actual = null;
+            double menorDist = Double.MAX_VALUE;
+            for (V v : grafo.vertices()) {
+                if (!visitados.contains(v) && distancia.get(v) < menorDist) {
+                    menorDist = distancia.get(v);
+                    actual = v;
+                }
+            }
+
+            //Si queda alguno que no se pueda alcanzar, break
+            if (actual == null) break;
+
+            visitados.add(actual);
+
+            //se comparan nuevas aristas para ver si tienen mejores caminos
+            for (var arista : grafo.adyacencias(grafo.construirComparable(actual))) {
+                V vecino = arista.target();
+                double nuevaDist = distancia.get(actual) + arista.dato().getWeight();
+
+                if (nuevaDist < distancia.get(vecino)) {
+                    distancia.put(vecino, nuevaDist);
+
+                   
+                    List<V> nuevoCamino = new ArrayList<>(caminos.get(actual));
+                    nuevoCamino.add(vecino);
+                    caminos.put(vecino, nuevoCamino);
+                }
+            }
+        }
+
+        return new DijkstraResult<>(sourceVertex, distancia, caminos);
     }
 
     /**
