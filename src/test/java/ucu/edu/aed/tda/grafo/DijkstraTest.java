@@ -8,7 +8,6 @@ import ucu.edu.aed.tda.grafo.model.implementaciones.DirectedGraphAlgorithms;
 import ucu.edu.aed.tda.grafo.model.result.IDijkstraResult;
 
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DijkstraTest {
