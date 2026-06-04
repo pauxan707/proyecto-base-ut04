@@ -38,4 +38,3 @@ public class DijkstraResult<V> implements IDijkstraResult<V>{
     public List<V> getPath(V otherVertex){
        return caminos.get(otherVertex);}
 }
-
