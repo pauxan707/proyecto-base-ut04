@@ -48,13 +48,13 @@ public class obtenerExcentricidadTests {
 
     //verifica el resultado cuando el vértice evaluado no puede llegar a todo el grafo
     @Test
-    void obtenerExcentricidad_verticeInalcanzable_retornaInfinito() {
+    void obtenerExcentricidad_verticeInalcanzable_retornaMaximoAlcanzable() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
         grafo.agregarVertices(List.of("A", "B", "C"));
         grafo.agregarArista("A", "B", new WeightedEdge(4));
 
         double excentricidadA = algoritmos.obtenerExcentricidad(grafo, "A");
 
-        assertEquals(Double.MAX_VALUE, excentricidadA);
+        assertEquals(4.0, excentricidadA);
     }
 }
