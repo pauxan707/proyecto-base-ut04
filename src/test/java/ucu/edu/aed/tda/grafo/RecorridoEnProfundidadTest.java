@@ -102,7 +102,7 @@ public class RecorridoEnProfundidadTest {
 
         assertEquals("A", visitados.get(0));
         assertEquals(5, visitados.size());
-        assertEquals(grafo, visitados.stream().distinct().count());
+        assertEquals(grafo.vertices().size(), visitados.stream().distinct().count());
         assertTrue(visitados.containsAll(List.of("A","B", "C","D", "E")));
     }
 
