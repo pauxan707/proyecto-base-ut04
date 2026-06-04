@@ -20,7 +20,9 @@ public class obtenerTodosLosCaminosTests {
         algoritmos = new DirectedGraphAlgorithms();
     }
  
-    //caso básico donde existen múltiples caminos para llegar al destino
+    /**
+     * caso básico donde existen múltiples caminos para llegar al destino
+     */
     @Test
     void obtenerTodosLosCaminos_multiplesOpciones_encuentraTodos() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -37,7 +39,9 @@ public class obtenerTodosLosCaminosTests {
         assertEquals(2, caminos.size());
     }
 
-    //verifica que retorne una lista vacía si los vértices están desconectados
+    /**
+     * verifica que retorne una lista vacía si los vértices están desconectados
+     */
     @Test
     void obtenerTodosLosCaminos_sinCaminoPosible_retornaListaVacia() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -49,7 +53,9 @@ public class obtenerTodosLosCaminosTests {
         assertTrue(caminos.isEmpty());
     }
 
-    //evita bucles infinitos cuando el grafo contiene ciclos y extrae los caminos válidos
+    /**
+     * evita bucles infinitos cuando el grafo contiene ciclos y extrae los caminos válidos
+     */
     @Test
     void obtenerTodosLosCaminos_conCicloEnElGrafo_noSeQuedaPegado() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();

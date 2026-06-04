@@ -21,7 +21,9 @@ public class WarshallTests {
         algoritmos = new DirectedGraphAlgorithms();
     }
 
-    //verifica la clausura transitiva básica para conectividad
+    /**
+     * verifica la clausura transitiva básica para conectividad
+     */
     @Test
     void warshall_conectividad_basica() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();

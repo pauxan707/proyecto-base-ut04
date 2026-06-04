@@ -19,7 +19,9 @@ public class calcularClasificacionTopologicaTests {
         algoritmos = new DirectedGraphAlgorithms();
     }
  
-    //caso básico donde el grafo se puede ordenar perfectamente
+    /**
+     * caso básico donde el grafo se puede ordenar perfectamente
+     */
     @Test
     void calcularClasificacionTopologica_casoEstandar_ordenaCorrectamente() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -33,7 +35,9 @@ public class calcularClasificacionTopologicaTests {
         assertEquals(List.of("A", "B", "C"), orden);
     }
 
-    //cuando el grafo tiene un ciclo no se puede hacer la clasificación completa (quedan nodos sin procesar)
+    /**
+     * cuando el grafo tiene un ciclo no se puede hacer la clasificación completa (quedan nodos sin procesar)
+     */
     @Test
     void calcularClasificacionTopologica_conCiclo_retornaListaIncompleta() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -48,7 +52,9 @@ public class calcularClasificacionTopologicaTests {
         assertTrue(orden.isEmpty());
     }
 
-    //un grafo con múltiples componentes desconectados pero sin ciclos genera un orden válido
+    /**
+     * un grafo con múltiples componentes desconectados pero sin ciclos genera un orden válido
+     */
     @Test
     void calcularClasificacionTopologica_grafosDesconectados_procesaTodosLosNodos() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -65,7 +71,9 @@ public class calcularClasificacionTopologicaTests {
         assertTrue(orden.indexOf("C") < orden.indexOf("D"));
     }
 
-    //un grafo sin aristas
+    /**
+     * un grafo sin aristas
+     */
     @Test
     void calcularClasificacionTopologica_sinAristas_retornaTodosLosVertices() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();

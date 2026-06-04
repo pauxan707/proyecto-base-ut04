@@ -35,7 +35,9 @@ public class obtenerCentroGrafoTests {
         assertEquals("B", centro);
     }
 
-    //verifica el comportamiento de obtenerCentroGrafo cuando hay vértices inalcanzables
+    /**
+     * verifica el comportamiento de obtenerCentroGrafo cuando hay vértices inalcanzables
+     */
     @Test
     void obtenerCentroGrafo_grafoDesconectado_retornaVerticeSegunAlgoritmo() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -48,5 +50,4 @@ public class obtenerCentroGrafoTests {
 
         assertEquals("C", centro); 
     }
-
 }
