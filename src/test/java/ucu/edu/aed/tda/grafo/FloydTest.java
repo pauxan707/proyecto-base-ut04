@@ -20,7 +20,9 @@ public class FloydTest {
         algoritmos = new DirectedGraphAlgorithms();
     }
 
-    //caso básico de matriz de caminos mínimos entre todos los pares
+    /**
+     * caso básico de matriz de caminos mínimos entre todos los pares
+     */
     @Test
     void floyd_caminoMinimo_basico() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -31,21 +33,20 @@ public class FloydTest {
 
         IFloydWarshallResult<String> resultado = algoritmos.floyd(grafo);
 
-        // el camino más corto de A a B debe ser a través de C (costo 3.0)
         assertEquals(3.0, resultado.getCost("A", "B"));
         assertEquals(List.of("A", "C", "B"), resultado.getPath("A", "B"));
         
-        // directo de C a B
         assertEquals(2.0, resultado.getCost("C", "B"));
     }
 
-    //verifica que se trabaje bien con vertices inalcanzables entre sí
+    /**
+     * verifica que se trabaje bien con vertices inalcanzables entre sí
+     */
     @Test
     void floyd_verticeInalcanzable_distanciaInfinita() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
         grafo.agregarVertices(List.of("A", "B", "C"));
         grafo.agregarArista("A", "B", new WeightedEdge(5));
-        // C queda completamente aislado
 
         IFloydWarshallResult<String> resultado = algoritmos.floyd(grafo);
 
