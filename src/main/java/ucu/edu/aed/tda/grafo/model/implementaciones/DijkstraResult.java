@@ -1,6 +1,5 @@
 package ucu.edu.aed.tda.grafo.model.implementaciones;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +14,13 @@ public class DijkstraResult<V> implements IDijkstraResult<V>{
         this.source = source;
         this.distancia = distancia;
         this.caminos =  caminos; 
+    }
+
+    /**
+     * Retorna el vertice origen desde el cual se ejecuto dijkstra
+     */
+    public V getSource() { 
+        return source;
     }
 
     /**
