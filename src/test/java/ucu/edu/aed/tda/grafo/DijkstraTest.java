@@ -8,7 +8,6 @@ import ucu.edu.aed.tda.grafo.model.implementaciones.DirectedGraphAlgorithms;
 import ucu.edu.aed.tda.grafo.model.result.IDijkstraResult;
 
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DijkstraTest {
@@ -20,7 +19,9 @@ public class DijkstraTest {
         algoritmos = new DirectedGraphAlgorithms();
     }
 
-   //caso básico
+    /**
+     * caso básico
+     */
     @Test
     void dijkstra_caminoMinimo_basico() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -43,7 +44,9 @@ public class DijkstraTest {
         assertEquals(List.of("A", "B", "E"), resultado.getPath("E"));
     }
 
-   //camino más barato se elige aunque no sea el directo
+    /**
+     * camino más barato se elige aunque no sea el directo
+     */
     @Test
     void dijkstra_elige_caminoIndirectoMasBarato() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();
@@ -60,7 +63,9 @@ public class DijkstraTest {
         assertEquals(List.of("A", "C", "B"), resultado.getPath("B"));
     }
 
-    //verifica que se trabaje bien con vertices inalcanzables
+    /**
+     * verifica que se trabaje bien con vertices inalcanzables
+     */
     @Test
     void dijkstra_verticeInalcanzable_distanciaInfinita() {
         DirectedGraph<String, WeightedEdge> grafo = new DirectedGraph<>();

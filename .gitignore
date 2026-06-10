@@ -1,0 +1,4 @@
+# para que no se suban los .class que dan problemas al hacer commit
+
+target/
+.vscode/

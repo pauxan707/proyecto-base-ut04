@@ -1,6 +1,5 @@
 package ucu.edu.aed.tda.grafo.model.implementaciones;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +17,13 @@ public class DijkstraResult<V> implements IDijkstraResult<V>{
     }
 
     /**
+     * Retorna el vertice origen desde el cual se ejecuto dijkstra
+     */
+    public V getSource() { 
+        return source;
+    }
+
+    /**
      * Devuelve el costo para ir a "otherVertex"
      */
     @Override
@@ -32,4 +38,3 @@ public class DijkstraResult<V> implements IDijkstraResult<V>{
     public List<V> getPath(V otherVertex){
        return caminos.get(otherVertex);}
 }
-

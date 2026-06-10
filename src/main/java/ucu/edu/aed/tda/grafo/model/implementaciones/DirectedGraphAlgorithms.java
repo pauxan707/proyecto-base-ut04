@@ -83,16 +83,104 @@ public class DirectedGraphAlgorithms implements IDirectedGraphAlgorithms {
      * ejecuta Floyd sobre el grafo pasado, sabiendo que el grafo es weighted
      */
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo){
-        return null;
-    }
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> floyd(IDirectedIGraph<V, D> grafo) {
+        List<V> vertices = new ArrayList<>(grafo.vertices());
+        Map<V, Map<V, Double>> dist = new HashMap<>();
+        Map<V, Map<V, List<V>>> caminos = new HashMap<>();
+ 
+        // se inicializa en infinito entre pare sy 0 con sigo mismo
+        for (V i : vertices) {
+            dist.put(i, new HashMap<>());
+            caminos.put(i, new HashMap<>());
+            for (V j : vertices) {
+                dist.get(i).put(j, i.equals(j) ? 0.0 : Double.MAX_VALUE);
+                caminos.get(i).put(j, new ArrayList<>()) ;
+            }
+            caminos.get(i).get(i).add(i); //camino de i a sí mismo
+        }
+ 
+        // se cargan las aristas directas del grafo
+        for (var arista : grafo.aristas()) {
+            V src = arista.source();
+            V tgt = arista.target();
+            dist.get(src).put(tgt, arista.dato().getWeight());
+            caminos.get(src).put(tgt, new ArrayList<>(List.of(src, tgt)));
+        }
+ 
+        // para cada vértice intermedio k, intentar mejorar todos los pares de i, j
+        for (V k : vertices) {
+            for (V i : vertices) {
+                for (V j : vertices) {
+                    double ik = dist.get(i).get(k);
+                    double kj = dist.get(k).get(j);
+ 
+                    
+                    if (ik == Double.MAX_VALUE || kj == Double.MAX_VALUE) continue; //aca hacemos esto para evitar un overflow, ya que al sumar dos max values claramente ocurriría overflow.
+ 
+                    double nuevaDist = ik + kj;
+                    if (nuevaDist < dist.get(i).get(j)) {
+                        dist.get(i).put(j, nuevaDist);
+ 
+                       
+                        List<V> nuevoCamino = new ArrayList<>(caminos.get(i).get(k));
+                        List<V> caminoKJ = caminos.get(k).get(j);
 
+                        nuevoCamino.addAll(caminoKJ.subList(1, caminoKJ.size()));
+                        caminos.get(i).put(j, nuevoCamino);
+                    }
+                }
+            }
+        }
+ 
+        return new FloydWarshallResult<>(dist, caminos);
+    }
+ 
     /**
-     * ejecuta Warshall sobre el grafo pasado, sabiendo que el grafo es weighted
+     * ejecuta Floyd sobre el grafo pasado, sabiendo que el grafo es weighted
      */
     @Override
-    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo){
-        return null;
+    public <V, D extends WeightedEdge> IFloydWarshallResult<V> warshall(IDirectedIGraph<V, D> grafo) {
+        List<V> vertices = new ArrayList<>(grafo.vertices());
+        Map<V, Map<V, Boolean>> alcanzable = new HashMap<>();
+ 
+        // Se inicializa todo en "Inalcanzable" excepto vértice consigo mismo
+        for (V i : vertices) {
+            alcanzable.put(i, new HashMap<>());
+            for (V j : vertices) {
+                alcanzable.get(i).put(j, i.equals(j));
+            }
+        }
+ 
+        
+        for (var arista : grafo.aristas()) {
+            alcanzable.get(arista.source()).put(arista.target(), true);
+        }
+ 
+        // pra cada vértice intermedio k, actualizar la conectividad de todos los pares
+        for (V k : vertices) {
+            for (V i : vertices) {
+                for (V j : vertices) {
+                    if (alcanzable.get(i).get(k) && alcanzable.get(k).get(j)) {
+                        alcanzable.get(i).put(j, true);
+                    }
+                }
+            }
+        }
+ 
+        //convertimos la matriz booleana al formato de la interfaz unificada, se usa 0.0 y MAX_VALUE para alcanzable e inalcanzable
+ 
+        Map<V, Map<V, Double>> costos = new HashMap<>();
+        Map<V, Map<V, List<V>>> caminos = new HashMap<>();
+        for (V i : vertices) {
+            costos.put(i, new HashMap<>());
+            caminos.put(i, new HashMap<>());
+            for (V j : vertices) {
+                costos.get(i).put(j, alcanzable.get(i).get(j) ? 0.0 : Double.MAX_VALUE);
+                caminos.get(i).put(j, new ArrayList<>()); 
+            }
+        }
+ 
+        return new FloydWarshallResult<>(costos, caminos);
     }
  
     /**
