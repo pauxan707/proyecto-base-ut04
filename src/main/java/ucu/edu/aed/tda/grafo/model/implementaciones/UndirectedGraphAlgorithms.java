@@ -162,6 +162,10 @@ public class UndirectedGraphAlgorithms implements IUndirectedGraphAlgorithm {
             return;
         }
 
+        if (visitados.contains(source)) {
+            return;
+        }
+
         Queue<V> cola = new LinkedList<>();
         cola.add(source);
         visitados.add(source);
