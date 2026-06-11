@@ -1,11 +1,8 @@
-package ucu.edu.aed.tda.grafo;
+package ucu.edu.aed.tda.grafo.model.implementaciones;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ucu.edu.aed.tda.grafo.model.edge.WeightedEdge;
-import ucu.edu.aed.tda.grafo.model.implementaciones.DirectedGraph;
-import ucu.edu.aed.tda.grafo.model.implementaciones.DirectedGraphAlgorithms;
-
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
